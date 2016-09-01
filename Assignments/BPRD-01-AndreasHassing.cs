@@ -53,7 +53,7 @@ namespace BPRD.Abhn {
 
                 return this;
             }
-            
+
             public override string ToString() { return string.Format("Add({0}, {1})", e1, e2); }
         }
 

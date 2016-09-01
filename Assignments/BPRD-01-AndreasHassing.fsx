@@ -123,7 +123,7 @@ let rec eval2 e (env : (string * int) list) : int =
         (vn, eval2 ve envacc) :: envacc
     match e with
     | CstI i            -> i
-    | Var x             -> lookup env x 
+    | Var x             -> lookup env x
     | Let(bs, ebody)    -> let env = List.fold envfolder env bs
                            eval2 ebody env
     | Prim("+", e1, e2) -> eval2 e1 env + eval2 e2 env
