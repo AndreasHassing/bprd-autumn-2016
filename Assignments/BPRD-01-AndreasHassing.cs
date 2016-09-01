@@ -1,4 +1,4 @@
-namespace BPRD.AbhnMatho {
+namespace BPRD.Abhn {
     using System;
     using System.Collections.Generic; // Dictionary
 

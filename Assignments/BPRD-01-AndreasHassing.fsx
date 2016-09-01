@@ -1,4 +1,4 @@
-module BPRD.AbhnMatho.Exercise1
+module BPRD.Abhn.Exercise1
 
 // the load statement might need to be changed for you.
 #load "../Intro/Intro2.fs"
@@ -104,4 +104,4 @@ let rec diff var = function
 
 
 /// Exercise 1.4
-/// See `BPRD-01-AndreasHassing-MarkusThomsen.cs`
+/// See `BPRD-01-AndreasHassing.cs`
