@@ -74,9 +74,24 @@ namespace BPRD.Abhn {
                 }
             }
 
+            private Expr simpBothCst(Expr e1, Expr e2) {
+                var e1v = e1.Eval(null);
+                var e2v = e2.Eval(null);
+
+                if      (e1v == 1) return e2;
+                else if (e2v == 1) return e1;
+                else if (e1v == 0 || e2v == 0) return Zero;
+
+                return this;
+            }
+
             public override Expr Simplify() {
                 Expr s1 = e1.Simplify(), s2 = e2.Simplify();
                 bool s1isCst = IsCst(s1), s2isCst = IsCst(s2);
+
+                if (s1isCst && s2isCst) {
+                    return simpBothCst(s1, s2);
+                }
 
                 if (s1isCst) {
                     var s1v = s1.Eval(null);
@@ -137,7 +152,7 @@ namespace BPRD.Abhn {
             // (iv) Add the simplify function to each subclass of `Expr`
             var e6 = new Add(new Var("x"), new CstI(0)); // => x
             var e7 = new Sub(new Var("x"), new CstI(0)); // => x
-            var e8 = new Mul(new Var("x"), new CstI(0)); // => 0
+            var e8 = new Mul(new CstI(5), new CstI(0));  // => 0
             var e9 = new Mul(new Var("x"), new CstI(1)); // => x
             Console.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}",
                 e6.Simplify(), e7.Simplify(), e8.Simplify(), e9.Simplify()));
