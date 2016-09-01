@@ -40,11 +40,10 @@ namespace BPRD.Abhn {
         public class Add : Binop {
             public Add(Expr e1, Expr e2) : base(e1, e2) {}
             public override int Eval(Dictionary<string, int> env) { return e1.Eval(env) + e2.Eval(env); }
+
             public override Expr Simplify() {
-                var s1 = e1.Simplify();
-                var s2 = e2.Simplify();
-                var s1isCst = IsCst(s1);
-                var s2isCst = IsCst(s2);
+                Expr s1 = e1.Simplify(), s2 = e2.Simplify();
+                bool s1isCst = IsCst(s1), s2isCst = IsCst(s2);
 
                 if (s1isCst && s1.Eval(null) == 0) {
                     return s2;
@@ -54,6 +53,7 @@ namespace BPRD.Abhn {
 
                 return this;
             }
+            
             public override string ToString() { return string.Format("Add({0}, {1})", e1, e2); }
         }
 
