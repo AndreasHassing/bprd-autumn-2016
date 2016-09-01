@@ -1,7 +1,7 @@
 module BPRD.Abhn.Exercise1
 
 // the load statement might need to be changed for you.
-#load "../Intro/Intro2.fs"
+#load "../Intro/Intro2.fs";;
 open Intro2
 
 /// Exercise 1.1
@@ -105,3 +105,31 @@ let rec diff var = function
 
 /// Exercise 1.4
 /// See `BPRD-01-AndreasHassing.cs`
+
+
+/// Exercise 2.1
+// the load statement might need to be changed for you.
+#load "../Intcomp/Intcomp1.fs";;
+open Intcomp1
+
+type expr2 =
+    | CstI of int
+    | Var of string
+    | Let of (string * expr2) list * expr2
+    | Prim of string * expr2 * expr2
+
+let rec eval2 e (env : (string * int) list) : int =
+    let envfolder envacc (vn, ve) =
+        (vn, eval2 ve envacc) :: envacc
+    match e with
+    | CstI i            -> i
+    | Var x             -> lookup env x 
+    | Let(bs, ebody)    -> let env = List.fold envfolder env bs
+                           eval2 ebody env
+    | Prim("+", e1, e2) -> eval2 e1 env + eval2 e2 env
+    | Prim("*", e1, e2) -> eval2 e1 env * eval2 e2 env
+    | Prim("-", e1, e2) -> eval2 e1 env - eval2 e2 env
+    | Prim _            -> failwith "unknown primitive"
+
+let intcompexp = Let ([("x1", Prim("+", CstI 5, CstI 7));
+                       ("x2", Prim("*", Var "x1", CstI 2))], Prim("+", Var "x1", Var "x2"))
