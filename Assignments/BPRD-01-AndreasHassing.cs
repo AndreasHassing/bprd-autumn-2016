@@ -4,7 +4,7 @@ namespace BPRD.Abhn {
 
     /// Exercise 1.4
     /// (i) Create the Expression data type in C#
-    /// Part (ii), (iii) and (iv) are handled in the Main function (line 115)
+    /// Part (ii), (iii) and (iv) are handled in the Main function
     public class Exercise1dot4 {
         public abstract class Expr {
             public abstract int Eval(Dictionary<string, int> env);
