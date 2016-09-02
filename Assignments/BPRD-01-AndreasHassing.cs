@@ -61,8 +61,8 @@ namespace BPRD.Abhn {
             public Mul(Expr e1, Expr e2) : base(e1, e2) {}
             public override int Eval(Dictionary<string, int> env) { return e1.Eval(env) * e2.Eval(env); }
 
-            /// Helper for Simplify that takes care of the cases when
-            /// Mul can be simplified.
+            /// Helper for Simplify that simplifies Mul when one
+            /// of the exressions is a CstI.
             private Expr simp(int sv, Expr other) {
                 switch (sv) {
                     case 0:
@@ -74,6 +74,8 @@ namespace BPRD.Abhn {
                 }
             }
 
+            /// Helper for Simplify that simlifies Mul when both the
+            /// expressions are CstI's.
             private Expr simpBothCst(Expr e1, Expr e2) {
                 var e1v = e1.Eval(null);
                 var e2v = e2.Eval(null);
