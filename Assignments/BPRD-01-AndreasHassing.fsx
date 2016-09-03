@@ -1,7 +1,9 @@
 module BPRD.Abhn.Exercise1
 
-// the load statement might need to be changed for you.
-#load "../Intro/Intro2.fs";;
+// the load statements might need to be changed for you
+#load "../Intro/Intro2.fs";;     // for exercises 1.1 and 1.2
+#load "../Intcomp/Intcomp1.fs";; // for exercises 2.1-2.3
+
 open Intro2
 
 /// Exercise 1.1
@@ -108,8 +110,6 @@ let rec diff var = function
 
 
 /// Exercise 2.1
-// the load statement might need to be changed for you.
-#load "../Intcomp/Intcomp1.fs";;
 /// Extend `eval` (here named `eval2`) with multiple
 /// sequential let-bindings.
 open Intcomp1
