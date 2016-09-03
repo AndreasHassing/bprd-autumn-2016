@@ -150,3 +150,16 @@ let rec freevars e : string list =
         union ((freevars erhs), minus (freevars (Let(bs, ebody)), [x]))
     | Prim(ope, e1, e2) -> union (freevars e1, freevars e2)
 
+
+/// Exercise 2.3
+/// Revise `expr`-to-`texpr` compiler `tcomp` to work with
+/// the extended language.
+let rec tcomp (e : expr2) (cenv : string list) : texpr =
+    match e with
+    | CstI i -> TCstI i
+    | Var x  -> TVar (getindex cenv x)
+    | Let([], ebody) -> tcomp ebody cenv
+    | Let((s, erhs) :: bs, ebody) ->
+        let cenv1 = s :: cenv
+        TLet(tcomp (Let(bs, erhs)) cenv, tcomp (Let(bs, ebody)) cenv1)
+    | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
