@@ -5,16 +5,16 @@ module BPRD.Abhn.Exercise1
 open Intro2
 
 /// Exercise 1.1
-/// (iv)  Extend the language with conditional expressions (If)
+/// (iv)  Extend the language with conditional expressions (`If`)
 type expr =
     | CstI of int
     | Var of string
     | Prim of string * expr * expr
     | If of expr * expr * expr
 
-/// (i)   Extend `eval` by adding min, max and ==
+/// (i)   Extend `eval` by adding `min`, `max` and `==`
 /// (iii) Rewrite `eval` to evaluate arguments of a primitive
-/// (v)   Extend `eval` by adding the If operation
+/// (v)   Extend `eval` by adding the `If` operation
 let rec eval e (env : (string * int) list) : int =
     match e with
     | CstI i           -> i
@@ -31,7 +31,7 @@ let rec eval e (env : (string * int) list) : int =
         | "=="  -> if i1 = i2 then 1 else 0
         | _     -> failwith "unknown primitive"
 
-/// (ii) Write example expressions, using min, max and ==
+/// (ii) Write example expressions, using `min`, `max` and `==`
 let eequality = Prim("==", Prim("*", Var "c", CstI 5), CstI 390)
 let eequalityv =
     eval eequality env    // => 1 (true)
@@ -50,7 +50,7 @@ let eif2v = eval eif2 env // => 17
 
 
 /// Exercise 1.2
-/// (i) Declare aexpr
+/// (i) Declare `aexpr`
 type aexpr =
     | CstI of int
     | Var of string
@@ -110,6 +110,8 @@ let rec diff var = function
 /// Exercise 2.1
 // the load statement might need to be changed for you.
 #load "../Intcomp/Intcomp1.fs";;
+/// Extend `eval` (here named `eval2`) with multiple
+/// sequential let-bindings.
 open Intcomp1
 
 type expr2 =
@@ -132,4 +134,6 @@ let rec eval2 e (env : (string * int) list) : int =
     | Prim _            -> failwith "unknown primitive"
 
 let intcompexp = Let ([("x1", Prim("+", CstI 5, CstI 7));
-                       ("x2", Prim("*", Var "x1", CstI 2))], Prim("+", Var "x1", Var "x2"))
+                       ("x2", Prim("*", Var "x1", CstI 2))],
+                      Prim("+", Var "x1", Var "x2"))
+
