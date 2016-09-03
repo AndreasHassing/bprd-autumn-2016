@@ -133,9 +133,9 @@ let rec eval2 e (env : (string * int) list) : int =
     | Prim("-", e1, e2) -> eval2 e1 env - eval2 e2 env
     | Prim _            -> failwith "unknown primitive"
 
-let intcompexp = Let ([("x1", Prim("+", CstI 5, CstI 7));
-                       ("x2", Prim("*", Var "x1", CstI 2))],
-                      Prim("+", Var "x1", Var "x2"))
+let intcompexp = Let ([("x", Prim("+", CstI 5, CstI 7));
+                       ("y", Prim("*", Var "x", CstI 2))],
+                      Prim("+", Var "x", Var "y"))
 
 
 /// Exercise 2.2
