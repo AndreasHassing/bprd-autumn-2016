@@ -1,8 +1,8 @@
 module BPRD.Abhn.Exercise1
 
 // the load statements might need to be changed for you
-#load "../Intro/Intro2.fs";;     // for exercises 1.1 and 1.2
-#load "../Intcomp/Intcomp1.fs";; // for exercises 2.1-2.3
+#load "../Intro/Intro2.fs";;
+#load "../Intcomp/Intcomp1.fs";;
 
 open Intro2
 
