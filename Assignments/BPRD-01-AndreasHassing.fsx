@@ -137,3 +137,16 @@ let intcompexp = Let ([("x1", Prim("+", CstI 5, CstI 7));
                        ("x2", Prim("*", Var "x1", CstI 2))],
                       Prim("+", Var "x1", Var "x2"))
 
+
+/// Exercise 2.2
+/// Revise `freevars` to work for the language as extended
+/// in exercise 2.1.
+let rec freevars e : string list =
+    match e with
+    | CstI i         -> []
+    | Var x          -> [x]
+    | Let([], ebody) -> freevars ebody
+    | Let((x, erhs) :: bs, ebody) ->
+        union ((freevars erhs), minus (freevars (Let(bs, ebody)), [x]))
+    | Prim(ope, e1, e2) -> union (freevars e1, freevars e2)
+
