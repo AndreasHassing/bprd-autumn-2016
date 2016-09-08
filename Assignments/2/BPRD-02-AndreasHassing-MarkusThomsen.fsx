@@ -55,3 +55,6 @@ open Parse
 let compString s =
     scomp (fromString s) []
 
+
+/// Exercise 3.7
+// See the modified files `Absyn.fs`, `ExprLex.fsl` and `ExprPar.fsy`.
