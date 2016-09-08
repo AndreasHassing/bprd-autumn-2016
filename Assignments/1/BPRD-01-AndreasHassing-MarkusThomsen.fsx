@@ -1,4 +1,4 @@
-module BPRD.Abhn.Exercise1
+module BPRD.AbhnMatho.Exercise1
 
 // the load statements might need to be changed for you
 #load "../Intro/Intro2.fs";;
