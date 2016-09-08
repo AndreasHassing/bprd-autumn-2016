@@ -42,3 +42,16 @@ let exprstr = "let z = (17) in z + 2 * 3 end EOF"
 // Here we totally pretend that we did that exercise and have successfully
 // configured everything according to the specs.
 
+
+/// Exercise 3.6
+/// Define the function `compString`.
+// the load statements might need to be changed for you
+#load "../../Expr/Expr.fs";;
+#load "../../Expr/Parse.fs";;
+
+open Expr
+open Parse
+
+let compString s =
+    scomp (fromString s) []
+
