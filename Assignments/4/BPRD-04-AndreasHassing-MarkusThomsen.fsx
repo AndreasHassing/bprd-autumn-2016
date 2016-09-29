@@ -146,3 +146,30 @@ inferType (fromString @"let f x =
                             let g y = if true then y else x
                             in g false end
                         in f true end");; // => "bool"
+
+// (ii) Write micro-ML programs for which the micro-ML type inference
+//      report the following types:
+
+// bool -> bool
+inferType (fromString @"let falsifyer x = x=false in falsifyer end");;
+
+// int -> int
+inferType (fromString @"let increment x = x+1 in increment end");;
+
+// int -> int -> int
+inferType (fromString @"let add x = let add2 y = x+y in add2 end in add end");;
+
+// ’a -> ’b -> ’a
+inferType (fromString @"let do x = let id y = x in id end in do end");;
+
+// ’a -> ’b -> ’b
+inferType (fromString @"let do x = let id y = y in id end in do end");;
+
+// (’a -> ’b) -> (’b -> ’c) -> (’a -> ’c)
+
+
+// ’a -> ’b
+// We can't seem to find a way to make a program with this type inference.
+
+// ’a
+// Not this one either :( .
