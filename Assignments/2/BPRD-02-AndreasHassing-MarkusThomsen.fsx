@@ -9,9 +9,9 @@ open System.Text.RegularExpressions
 ///
 /// Then construct the corresponding NFA, and attempt
 /// to find a DFA corresponding to the NFA.
-let abrgx = Regex @"^([^a]a|b)+$"
+let abrgx = Regex @"^([^a]a|b)+$" // this regex is wrong! the string `a` won't work.
 // regex reads: from the start of the line, find an `a`
-// (but not two `a`'s in sequence) or a `b`, one or more times
+// (but not two `a`'s in a row) or a `b`, one or more times
 // until the end of the line
 
 // Refer to the image files: `NFA.png` and `NDFA.png` for the

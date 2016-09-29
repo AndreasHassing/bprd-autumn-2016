@@ -15,7 +15,8 @@
 %token LPAR RPAR
 %token EOF
 
-%left MINUS PLUS        /* lowest precedence  */
+%left ELSE              /* lowest precedence  */
+%left MINUS PLUS
 %left TIMES             /* highest precedence */
 
 %start Main
