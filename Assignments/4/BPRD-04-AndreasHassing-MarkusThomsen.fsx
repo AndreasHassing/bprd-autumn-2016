@@ -68,3 +68,81 @@ run (fromString @"let add x = fun y -> x+y in add 2 5 end");;
 
 run (fromString @"let y = 22 in fun z -> z+y end");;
     // => Clos ("z",Prim ("+",Var "z",Var "y"),[("y", Int 22)])
+
+
+/// Exercise 6.4
+// (i) Type rule tree for the following ML-Micro program,
+//     and why should should the type of `f` be polymorphic?
+@"let f x = 1
+  in f f end";;
+// I can't find anything in PLC about creating type rule trees :(
+
+// I'm assuming you mean that `x` should be polymorphic, in which
+// case I can explain the polymorphism:
+// `f` can be called with any type for `x`, because `x` is unused,
+// thus `x` should be polymorphic, as we can't derive its type.
+
+// (ii) Same as for (i), except: why should the type of `f`
+//      NOT be polymorphic?
+@"let f x = if x<10 then 42 else f(x+1)
+  in f 20 end"
+
+// Again, I have not been able to find anything about type rule trees.
+
+// For `x` in this `f`, it must not be polymorphic, as `x` is compared
+// against an integer, an integer is added to `x`, and `x` is set to be
+// 20 when running the function. `x` is monomorphic, and is, more
+// specifically, an integer.
+
+
+/// Exercise 6.5
+// For your copy-pasting convenience :)
+#load "Absyn.fs";;
+#load "FunPar.fs";;
+#load "FunLex.fs";;
+#load "Parse.fs";
+#load "TypeInference.fs";;
+#load "ParseAndType.fs";;
+
+open ParseAndType;;
+
+inferType (fromString "let f x = 1 in f 7 + f false end");; // => "int"
+
+// (i) Use the type inference on the micro-ML programs shown below,
+//     and report what type the program has. Some of the type inferences
+//     will fail because the programs are not typable in micro-ML;
+//     in those cases, explain why the program is not typable:
+inferType (fromString @"let f x = 1
+                        in f f end");; // => "int"
+
+inferType (fromString @"let f g = g g
+                        in f end");;
+    // => System.Exception: type error: circularity
+    // `g` must be a function with types: `α -> α`,
+    // and when its called with itself as argument,
+    // we get a circular type inference chain
+    // (which is illegal).
+
+inferType (fromString @"let f x =
+                            let g y = y
+                            in g false end
+                        in f 42 end");; // => "bool"
+
+inferType (fromString @"let f x =
+                            let g y = if true then y else x
+                            in g false end");;
+    // => System.Exception: parse error near line 3, column 42
+    // The `Letfun` expression is defined as follows:
+    // LET NAME NAME EQ Expr IN Expr END { Letfun($2, $3, $5, $7) }
+    // in the parser. So we get a parser error, as the first let
+    // function is missing its Letbody.
+
+inferType (fromString @"in f 42 end");;
+    // => System.Exception: parse error near line 1, column 2
+    // This is invalid Micro-ML syntax. No program expression
+    // can start with the `in` keyword.
+
+inferType (fromString @"let f x =
+                            let g y = if true then y else x
+                            in g false end
+                        in f true end");; // => "bool"
