@@ -13,31 +13,31 @@ open Absyn
 type 'v env = (string * 'v) list
 
 let rec lookup env x =
-    match env with 
+    match env with
     | []        -> failwith (x + " not found")
     | (y, v)::r -> if x=y then v else lookup r x;;
 
-(* Operations on sets of type variables, represented as lists.  
-   Inefficient but simple.  Basically compares type variables 
+(* Operations on sets of type variables, represented as lists.
+   Inefficient but simple.  Basically compares type variables
    on their string names.  Correct so long as all type variable names
    are distinct. *)
 
-let rec mem x vs = 
+let rec mem x vs =
     match vs with
     | []      -> false
     | v :: vr -> x=v || mem x vr;;
 
 (* union(xs, ys) is the set of all elements in xs or ys, without duplicates *)
 
-let rec union (xs, ys) = 
-    match xs with 
+let rec union (xs, ys) =
+    match xs with
     | []    -> ys
     | x::xr -> if mem x ys then union(xr, ys)
                else x :: union(xr, ys);;
 
 (* unique xs  is the set of members of xs, without duplicates *)
 
-let rec unique xs = 
+let rec unique xs =
     match xs with
     | []    -> []
     | x::xr -> if mem x xr then unique xr else x :: unique xr;;
@@ -50,7 +50,7 @@ type typ =
      | TypF of typ * typ                   (* (argumenttype, resulttype) *)
      | TypV of typevar                     (* type variable              *)
 
-and tyvarkind =  
+and tyvarkind =
      | NoLink of string                    (* uninstantiated type var.   *)
      | LinkTo of typ                       (* instantiated to typ        *)
 
@@ -59,7 +59,7 @@ and typevar =
 
 (* A type scheme is a list of generalized type variables, and a type: *)
 
-type typescheme = 
+type typescheme =
      | TypeScheme of typevar list * typ   (* type variables and type    *)
 
 (* *)
@@ -76,30 +76,30 @@ let setTvLevel tyvar newLevel =
    associated type (if any).  This is the `find' operation, with path
    compression, in the union-find algorithm. *)
 
-let rec normType t0 = 
+let rec normType t0 =
     match t0 with
     | TypV tyvar ->
-      match !tyvar with 
-      | (LinkTo t1, _) -> let t2 = normType t1 
+      match !tyvar with
+      | (LinkTo t1, _) -> let t2 = normType t1
                           setTvKind tyvar (LinkTo t2); t2
       | _ -> t0
     |  _ -> t0;
 
-let rec freeTypeVars t : typevar list = 
+let rec freeTypeVars t : typevar list =
     match normType t with
     | TypI        -> []
     | TypB        -> []
     | TypV tv     -> [tv]
     | TypF(t1,t2) -> union(freeTypeVars t1, freeTypeVars t2)
 
-let occurCheck tyvar tyvars =                     
+let occurCheck tyvar tyvars =
     if mem tyvar tyvars then failwith "type error: circularity" else ()
 
-let pruneLevel maxLevel tvs = 
-    let reducelevel tyvar = 
+let pruneLevel maxLevel tvs =
+    let reducelevel tyvar =
         let (_, level) = !tyvar
         setTvLevel tyvar (min level maxLevel)
-    List.iter reducelevel tvs 
+    List.iter reducelevel tvs
 
 (* Make type variable tyvar equal to type t (by making tyvar link to t),
    but first check that tyvar does not occur in t, and reduce the level
@@ -119,7 +119,7 @@ let rec typeToString t : string =
     | TypB         -> "bool"
     | TypV _       -> failwith "typeToString impossible"
     | TypF(t1, t2) -> "function"
-            
+
 (* Unify two types, equating type variables with types as necessary *)
 
 let rec unify t1 t2 : unit =
@@ -129,10 +129,10 @@ let rec unify t1 t2 : unit =
     | (TypI, TypI) -> ()
     | (TypB, TypB) -> ()
     | (TypF(t11, t12), TypF(t21, t22)) -> (unify t11 t21; unify t12 t22)
-    | (TypV tv1, TypV tv2) -> 
+    | (TypV tv1, TypV tv2) ->
       let (_, tv1level) = !tv1
       let (_, tv2level) = !tv2
-      if tv1 = tv2                then () 
+      if tv1 = tv2                then ()
       else if tv1level < tv2level then linkVarToType tv1 t2'
                                   else linkVarToType tv2 t1'
     | (TypV tv1, _       ) -> linkVarToType tv1 t2'
@@ -145,8 +145,8 @@ let rec unify t1 t2 : unit =
 
 let tyvarno = ref 0
 
-let newTypeVar level : typevar = 
-    let rec mkname i res = 
+let newTypeVar level : typevar =
+    let rec mkname i res =
             if i < 26 then char(97+i) :: res
             else mkname (i/26-1) (char(97+i%26) :: res)
     let intToName i = new System.String(Array.ofList('\'' :: mkname i []))
@@ -157,8 +157,8 @@ let newTypeVar level : typevar =
    over those whose level is higher than the current level: *)
 
 let rec generalize level (t : typ) : typescheme =
-    let notfreeincontext tyvar = 
-        let (_, linkLevel) = !tyvar 
+    let notfreeincontext tyvar =
+        let (_, linkLevel) = !tyvar
         linkLevel > level
     let tvs = List.filter notfreeincontext (freeTypeVars t)
     TypeScheme(unique tvs, t)  // The unique call seems unnecessary because freeTypeVars has no duplicates??
@@ -166,12 +166,12 @@ let rec generalize level (t : typ) : typescheme =
 (* Copy a type, replacing bound type variables as dictated by tvenv,
    and non-bound ones by a copy of the type linked to *)
 
-let rec copyType subst t : typ = 
+let rec copyType subst t : typ =
     match t with
     | TypV tyvar ->
       let (* Could this be rewritten so that loop does only the substitution *)
-          rec loop subst1 =          
-          match subst1 with 
+          rec loop subst1 =
+          match subst1 with
                | (tyvar1, type1) :: rest -> if tyvar1 = tyvar then type1 else loop rest
                | [] -> match !tyvar with
                        | (NoLink _, _)  -> t
@@ -194,16 +194,16 @@ let specialize level (TypeScheme(tvs, t)) : typ =
 (* Pretty-print type, using names 'a, 'b, ... for type variables *)
 
 let rec showType t : string =
-    let rec pr t = 
+    let rec pr t =
         match normType t with
         | TypI         -> "int"
         | TypB         -> "bool"
-        | TypV tyvar   -> 
+        | TypV tyvar   ->
           match !tyvar with
           | (NoLink name, _) -> name
           | _                -> failwith "showType impossible"
         | TypF(t1, t2) -> "(" + pr t1 + " -> " + pr t2 + ")"
-    pr t 
+    pr t
 
 (* A type environment maps a program variable name to a typescheme *)
 
@@ -217,7 +217,7 @@ let rec typ (lvl : int) (env : tenv) (e : expr) : typ =
     | CstI i -> TypI
     | CstB b -> TypB
     | Var x  -> specialize lvl (lookup env x)
-    | Prim(ope, e1, e2) -> 
+    | Prim(ope, e1, e2) ->
       let t1 = typ lvl env e1
       let t2 = typ lvl env e2
       match ope with
@@ -227,8 +227,8 @@ let rec typ (lvl : int) (env : tenv) (e : expr) : typ =
       | "=" -> (unify t1 t2; TypB)
       | "<" -> (unify TypI t1; unify TypI t2; TypB)
       | "&" -> (unify TypB t1; unify TypB t2; TypB)
-      | _   -> failwith ("unknown primitive " + ope) 
-    | Let(x, eRhs, letBody) -> 
+      | _   -> failwith ("unknown primitive " + ope)
+    | Let(x, eRhs, letBody) ->
       let lvl1 = lvl + 1
       let resTy = typ lvl1 env eRhs
       let letEnv = (x, generalize lvl resTy) :: env
@@ -239,18 +239,18 @@ let rec typ (lvl : int) (env : tenv) (e : expr) : typ =
       unify TypB (typ lvl env e1);
       unify t2 t3;
       t2
-    | Letfun(f, x, fBody, letBody) -> 
+    | Letfun(f, x, fBody, letBody) ->
       let lvl1 = lvl + 1
       let fTyp = TypV(newTypeVar lvl1)
       let xTyp = TypV(newTypeVar lvl1)
-      let fBodyEnv = (x, TypeScheme([], xTyp)) 
+      let fBodyEnv = (x, TypeScheme([], xTyp))
                       :: (f, TypeScheme([], fTyp)) :: env
       let rTyp = typ lvl1 fBodyEnv fBody
       let _    = unify fTyp (TypF(xTyp, rTyp))
-      let bodyEnv = (f, generalize lvl fTyp) :: env 
+      let bodyEnv = (f, generalize lvl fTyp) :: env
       typ lvl bodyEnv letBody
-    | Call(eFun, eArg) -> 
-      let tf = typ lvl env eFun 
+    | Call(eFun, eArg) ->
+      let tf = typ lvl env eFun
       let tx = typ lvl env eArg
       let tr = TypV(newTypeVar lvl)
       unify tf (TypF(tx, tr));
@@ -260,6 +260,6 @@ let rec typ (lvl : int) (env : tenv) (e : expr) : typ =
 
 let rec tyinf e0 = typ 0 [] e0
 
-let inferType e = 
+let inferType e =
     (tyvarno := 0;
      showType (tyinf e));;

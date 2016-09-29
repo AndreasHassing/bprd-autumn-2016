@@ -19,7 +19,7 @@ B. Generating and compiling the lexer and parser, and loading them:
 
    fsyacc --module FunPar FunPar.fsy
    fslex --unicode FunLex.fsl
-   fsi -r FSharp.PowerPack.dll Absyn.fs FunPar.fs FunLex.fs Parse.fs   
+   fsi -r FSharp.PowerPack.dll Absyn.fs FunPar.fs FunLex.fs Parse.fs
 
    open Parse;;
    let e1 = fromString "5+7";;
@@ -64,7 +64,7 @@ E. Using the lexer, parser and higher-order evaluator together:
    fsi -r FSharp.PowerPack.dll Absyn.fs FunPar.fs FunLex.fs Parse.fs HigherFun.fs ParseAndRunHigher.fs
 
    open ParseAndRunHigher;;
-   run (fromString @"let twice f = let g x = f(f(x)) in g end 
+   run (fromString @"let twice f = let g x = f(f(x)) in g end
                      in let mul3 z = z*3 in twice mul3 2 end end");;
    #q;;
 
