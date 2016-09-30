@@ -85,7 +85,7 @@ run (fromString @"let y = 22 in fun z -> z+y end");;
 // (ii) Same as for (i), except: why should the type of `f`
 //      NOT be polymorphic?
 @"let f x = if x<10 then 42 else f(x+1)
-  in f 20 end"
+  in f 20 end";;
 
 // Again, I have not been able to find anything about type rule trees.
 
@@ -100,7 +100,7 @@ run (fromString @"let y = 22 in fun z -> z+y end");;
 #load "Absyn.fs";;
 #load "FunPar.fs";;
 #load "FunLex.fs";;
-#load "Parse.fs";
+#load "Parse.fs";;
 #load "TypeInference.fs";;
 #load "ParseAndType.fs";;
 
