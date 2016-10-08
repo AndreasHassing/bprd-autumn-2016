@@ -1,6 +1,6 @@
 module BPRD.AbhnMatho.Exercise2
 
-open System.Text.RegularExpressions
+open System.Text.RegularExpressions;;
 
 /// Exercise 3.2
 /// Write a regular expression that recognizes all
@@ -19,7 +19,7 @@ let abrgx = Regex @"^a?(ba|b)*$";;
 
 
 /// Exercise 3.3
-let exprstr = "let z = (17) in z + 2 * 3 end EOF"
+let exprstr = "let z = (17) in z + 2 * 3 end EOF";;
 
 //    Main
 // A: Expr EOF
@@ -49,11 +49,11 @@ let exprstr = "let z = (17) in z + 2 * 3 end EOF"
 #load "../../Expr/Expr.fs";;
 #load "../../Expr/Parse.fs";;
 
-open Expr
-open Parse
+open Expr;;
+open Parse;;
 
 let compString s =
-    scomp (fromString s) []
+    scomp (fromString s) [];;
 
 
 /// Exercise 3.7
