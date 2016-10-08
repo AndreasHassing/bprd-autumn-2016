@@ -24,9 +24,9 @@ let exprstr = "let z = (17) in z + 2 * 3 end EOF";;
 //    Main
 // A: Expr EOF
 // F: NAME EQ Expr IN Expr END EOF
-// G: NAME EQ Expr IN Expr * Expr END EOF
-// C: NAME EQ Expr IN Expr * 3 END EOF
-// H: NAME EQ Expr IN Expr + Expr * 3 END EOF
+// H: NAME EQ Expr IN Expr + Expr END EOF
+// G: NAME EQ Expr IN Expr + Expr * Expr END EOF
+// C: NAME EQ Expr IN Expr + Expr * 3 END EOF
 // C: NAME EQ Expr IN Expr + 2 * 3 END EOF
 // B: NAME EQ Expr IN z + 2 * 3 END EOF
 // E: NAME EQ (Expr) IN z + 2 * 3 END EOF
