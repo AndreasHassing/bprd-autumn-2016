@@ -9,7 +9,7 @@ open System.Text.RegularExpressions
 ///
 /// Then construct the corresponding NFA, and attempt
 /// to find a DFA corresponding to the NFA.
-let abrgx = Regex @"^([^a]a|b)+$" // this regex is wrong! the string `a` won't work.
+let abrgx = Regex @"^a?(ba|b)*$";;
 // regex reads: from the start of the line, find an `a`
 // (but not two `a`'s in a row) or a `b`, one or more times
 // until the end of the line
