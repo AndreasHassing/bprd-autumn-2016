@@ -1,0 +1,59 @@
+[
+    LDARGS;
+    CALL (1,"L1"); // main(n)
+    STOP;
+Label "L1";        // { -- main function begin
+    INCSP 1;       // int r;
+    GETBP;
+    CSTI 1;
+    ADD;           // get pointer to `r`
+    GETBP;
+    CSTI 0;
+    ADD;           // get pointer to `n`
+    LDI;           // load value of `n`
+    STI;           // r = n;
+    INCSP -1;      // { -- inner-scope begin
+    INCSP 1;       //   int r;
+    GETBP;
+    CSTI 0;
+    ADD;
+    LDI;           //   value of `n`
+    GETBP;
+    CSTI 2;
+    ADD;           //   address of `r`
+    CALL (2,"L2"); //   square(n, &r);
+    INCSP -1;
+    GETBP;
+    CSTI 2;
+    ADD;
+    LDI;           //   value of `r`
+    PRINTI;        //   print `r`;
+    INCSP -1;
+    INCSP -1;      // } -- inner-scope end
+    GETBP;
+    CSTI 1;
+    ADD;
+    LDI;
+    PRINTI;        // print r;
+    INCSP -1;
+    INCSP -1;      // } -- main function end
+    RET 0;
+Label "L2";        // { -- square function begin
+    GETBP;
+    CSTI 1;
+    ADD;
+    LDI;           // load value of `&r` => `*rp`
+    GETBP;
+    CSTI 0;
+    ADD;
+    LDI;           // load value of `n` => `i`
+    GETBP;
+    CSTI 0;
+    ADD;
+    LDI;           // load value of `n` => `i`
+    MUL;           // i * i
+    STI;           // *rp = result of i * i
+    INCSP -1;
+    INCSP 0;       // } -- square function end
+    RET 1
+]

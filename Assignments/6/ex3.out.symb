@@ -1,0 +1,46 @@
+[
+    LDARGS;        // command line args: int n
+    CALL (1,"L1"); // main(n)
+    STOP;          // halts the program
+Label "L1";        // void main(int n)
+    INCSP 1;       // int i
+    GETBP;         // from this and until...
+    CSTI 1;
+    ADD;           // (offset base pointer by 1)
+    CSTI 0;
+    STI;           // this will initialize `i`: i = 0
+    INCSP -1;
+    GOTO "L3";     // run while condition
+Label "L2";        // while-body
+    GETBP;
+    CSTI 1;
+    ADD;
+    LDI;           // load value of `i`
+    PRINTI;        // print the value of the top element (`i`)
+    INCSP -1;      // unload `i`
+    GETBP;
+    CSTI 1;
+    ADD;           // load the base pointer of `i` once, ..
+    GETBP;
+    CSTI 1;
+    ADD;           // and then again
+    LDI;           // then load `i` from the 2nd base pointer
+    CSTI 1;
+    ADD;           // add 1 to the top element (`i`)
+    STI;           // store the addition in place of `i` with the 1st base pointer
+    INCSP -1;
+    INCSP 0;       // this does nothing(?)
+Label "L3";        // while-conditional
+    GETBP;
+    CSTI 1;
+    ADD;
+    LDI;           // load value of `i`
+    GETBP;
+    CSTI 0;
+    ADD;           // (offset BP by 0 to retrieve value of `n`)
+    LDI;           // load value of `n`
+    LT;            // i < n (if true: add 1 to stack, else add 0)
+    IFNZRO "L2";   // goto while body
+    INCSP -1;      // remove result of i < n from stack
+    RET 0          // goto the initial CALL, +1
+]
