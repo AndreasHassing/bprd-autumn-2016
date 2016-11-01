@@ -207,6 +207,13 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Call(f, es) -> callfun f es varEnv funEnv
     | PreInc acc -> cAccess acc varEnv funEnv @ [DUP;LDI;CSTI 1;ADD;STI]
     | PreDec acc -> cAccess acc varEnv funEnv @ [DUP;LDI;CSTI 1;SUB;STI]
+    | CondExp(cond, trueE, falseE) ->
+      let labfalse = newLabel()
+      let labend   = newLabel()
+      cExpr cond varEnv funEnv
+      @ IFZERO labfalse :: cExpr trueE varEnv funEnv @ [GOTO labend]
+      @ Label labfalse :: cExpr falseE varEnv funEnv @ [Label labend]
+
 
 (* Generate code to access variable, dereference pointer or index array.
    The effect of the compiled code is to leave an lvalue on the stack.   *)

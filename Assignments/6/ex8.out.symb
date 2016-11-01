@@ -1,0 +1,41 @@
+# This code is much slower than `prog1`. We believe the reason for this is,
+# that the handwritten code in `prog1` does not contain the overhead of the
+# labelled scopes.
+# Furthermore, the compiler is not attempting to optimize code by reduction.
+# A good example of non-optimization is that the generated code contains
+# several 0-integer additions, that are redundant.
+[
+    LDARGS;
+    CALL (0,"L1");
+    STOP;
+Label "L1";
+    INCSP 1;
+    GETBP;
+    CSTI 0;
+    ADD;
+    CSTI 20000000;
+    STI;
+    INCSP -1;
+    GOTO "L3";
+Label "L2";
+    GETBP;
+    CSTI 0;
+    ADD;
+    GETBP;
+    CSTI 0;
+    ADD;
+    LDI;
+    CSTI 1;
+    SUB;
+    STI;
+    INCSP -1;
+    INCSP 0;
+Label "L3";
+    GETBP;
+    CSTI 0;
+    ADD;
+    LDI;
+    IFNZRO "L2";
+    INCSP -1;
+    RET -1
+]

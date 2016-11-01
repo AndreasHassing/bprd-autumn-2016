@@ -65,8 +65,10 @@ rule Token = parse
   | "<="            { LE }
   | "||"            { SEQOR }
   | "&&"            { SEQAND }
-  | "&"             { AMP }
-  | "!"             { NOT }
+  | '&'             { AMP }
+  | '!'             { NOT }
+  | '?'             { QUE }
+  | ':'             { COLON }
   | '('             { LPAR }
   | ')'             { RPAR }
   | '{'             { LBRACE }
