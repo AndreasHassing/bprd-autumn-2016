@@ -91,17 +91,13 @@ StmtOrDecSeq:
   | Vardec SEMI StmtOrDecSeq            { Dec (fst $1, snd $1) :: $3 }
 ;
 
-CaseSeq:
-    /* empty */                         { [] }
-  | Case CaseSeq                        { $1 :: $2 }
-;
-
-CaseBlock:
-    LBRACE CaseSeq RBRACE               { $2 }
-;
-
 Case:
-    CASE Const COLON Block              { Case($2, $4)         }
+    CASE Const COLON Block              { ($2, $4)             }
+;
+
+CaseSeq:
+    /* empty */                         { []                   }
+  | Case CaseSeq                        { $1 :: $2             }
 ;
 
 Stmt:
@@ -117,7 +113,7 @@ StmtM:  /* No unbalanced if-else */
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM  { Block [Stmt(Expr($3));Stmt(While($5,Block[Stmt($9);Stmt(Expr($7))]))]}
-  | SWITCH Expr CaseBlock               { Switch($2, $3)       }
+  | SWITCH Expr LBRACE CaseSeq RBRACE   { Switch($2, $4)       }
 ;
 
 StmtU:

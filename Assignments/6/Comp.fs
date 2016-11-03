@@ -142,23 +142,15 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Switch(e, cases) ->
       let switchExpr = cExpr e varEnv funEnv
       let endLabel = newLabel()
-
-      let compCase (Case(_, caseStmt) as c) : case * label * instr list =
-        let caseLabel = newLabel()
-        (c, caseLabel, Label caseLabel ::
-                       cStmt caseStmt varEnv funEnv
-                       @ [GOTO endLabel])
-
-      let cCases = List.map compCase cases
-
-      let compSwitchCheck acc (Case(caseTrigger, _), lab, _) =
-        [DUP; CSTI caseTrigger; EQ; IFNZRO lab] @ acc
-
-      let cSwitchCheck = (List.fold compSwitchCheck [] cCases) @ [GOTO endLabel]
-
-      switchExpr @
-      (List.fold (fun acc (_, _, code) -> acc @ code) cSwitchCheck cCases) @
-      [Label endLabel]
+      let rec compSwitch cases label accCode =
+        match cases with
+        | []                -> accCode @ [Label endLabel]
+        | (case, stm) :: cs ->
+            let nextLabel = if cs = [] then endLabel else (newLabel())
+            let cStm = cStmt stm varEnv funEnv
+            accCode @ [Label label; DUP; CSTI case; EQ; IFZERO nextLabel]
+                    @ cStm @ [GOTO endLabel] |> compSwitch cs nextLabel
+      compSwitch cases (newLabel()) []
     | Return None ->
       [RET (snd varEnv - 1)]
     | Return (Some e) ->

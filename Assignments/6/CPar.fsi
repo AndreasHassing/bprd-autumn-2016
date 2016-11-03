@@ -108,9 +108,8 @@ type nonTerminalId =
     | NONTERM_Paramdecs1
     | NONTERM_Block
     | NONTERM_StmtOrDecSeq
-    | NONTERM_CaseSeq
-    | NONTERM_CaseBlock
     | NONTERM_Case
+    | NONTERM_CaseSeq
     | NONTERM_Stmt
     | NONTERM_StmtM
     | NONTERM_StmtU
