@@ -21,6 +21,7 @@ let nl = CstI 10
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP PINC PDEC
 %token EOF
 %token QUE COLON // conditional expressions
+%token SWITCH CASE // switch block
 
 %right ASSIGN             /* lowest precedence */
 %nonassoc PRINT
@@ -90,6 +91,19 @@ StmtOrDecSeq:
   | Vardec SEMI StmtOrDecSeq            { Dec (fst $1, snd $1) :: $3 }
 ;
 
+CaseSeq:
+    /* empty */                         { [] }
+  | Case CaseSeq                        { $1 :: $2 }
+;
+
+CaseBlock:
+    LBRACE CaseSeq RBRACE               { $2 }
+;
+
+Case:
+    CASE Const COLON Block              { Case($2, $4)         }
+;
+
 Stmt:
     StmtM                               { $1 }
   | StmtU                               { $1 }
@@ -103,6 +117,7 @@ StmtM:  /* No unbalanced if-else */
   | IF LPAR Expr RPAR StmtM ELSE StmtM  { If($3, $5, $7)       }
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM  { Block [Stmt(Expr($3));Stmt(While($5,Block[Stmt($9);Stmt(Expr($7))]))]}
+  | SWITCH Expr CaseBlock               { Switch($2, $3)       }
 ;
 
 StmtU:
