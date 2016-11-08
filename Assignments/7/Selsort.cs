@@ -23,7 +23,7 @@ class Selsort {
       for (int j = i+1; j < arr.Length; j++)
         if (arr[j] < arr[least])
             least = j;
-        int tmp = arr[i]; arr[i] = arr[least]; arr[least] = tmp;
+      int tmp = arr[i]; arr[i] = arr[least]; arr[least] = tmp;
     }
   }
 }
