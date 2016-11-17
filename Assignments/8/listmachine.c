@@ -453,7 +453,7 @@ void sweepPhase() {
       if (i + offset < HEAPSIZE && Color(block[offset]) == White) {
         int offset_len = offset + Length(block[offset]);
 
-        // Create new header for block
+        // use new Blue block header with increased block size
         block[0] = mkheader(CONSTAG, offset_len, Blue);
       }
       //--  EXERCISE 10.3 END  --//
